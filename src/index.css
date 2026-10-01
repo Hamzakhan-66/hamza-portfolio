@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-charcoal font-serif antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  .display {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  /* Card spotlight — a radial glow that follows the cursor,
+     position driven by --px/--py custom properties set by
+     the useTilt hook. Kept as a utility because Tailwind has
+     no first-class way to express `at var(--px) var(--py)`. */
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+      220px circle at var(--px, 50%) var(--py, 50%),
+      rgba(100, 28, 40, 0.09),
+      transparent 70%
+    );
+  }
+
+  .spotlight-sm::before {
+    background: radial-gradient(
+      150px circle at var(--px, 50%) var(--py, 50%),
+      rgba(100, 28, 40, 0.06),
+      transparent 70%
+    );
+  }
+
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  .hero-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      560px circle at var(--hx, 50%) var(--hy, 38%),
+      rgba(100, 28, 40, 0.06),
+      transparent 62%
+    );
+  }
+
+  .name-depth {
+    text-shadow:
+      1px 1px 0 rgba(100, 28, 40, 0.16),
+      2px 2px 10px rgba(23, 23, 23, 0.06);
+  }
+
+  /* Signature interaction 1 — the "ink reveal" mask on project
+     cards. Expands a burgundy face from the exact point the
+     cursor entered the card (--px/--py, already tracked by
+     useTilt), rather than a generic centered overlay. Only
+     `clip-path` animates, and only on hover — no per-frame
+     cost. */
+  .ink-reveal {
+    clip-path: circle(0% at var(--px, 50%) var(--py, 50%));
+    transition: clip-path 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .group:hover .ink-reveal {
+    clip-path: circle(145% at var(--px, 50%) var(--py, 50%));
+  }
+
+  /* Signature interaction 2 — the hero portrait's mask reveal.
+     The primary crop sits in an organic frame; hovering shifts
+     it slightly within that frame while a tinted duplicate
+     layer beneath is revealed at the opposite edge — a quiet
+     parallax-like separation, not a spin or a bounce. */
+  .hero-frame {
+    border-radius: 58% 42% 46% 54% / 52% 58% 42% 48%;
+  }
+
+  .hero-frame-alt {
+    border-radius: 46% 54% 58% 42% / 44% 48% 52% 56%;
+  }
+
+  /* Sliding nav indicator */
+  .nav-indicator {
+    transition:
+      transform 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+      width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  /* Ink underline — draws in from the left on hover instead of
+     a flat opacity/color swap. */
+  .ink-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .ink-underline:hover {
+    background-size: 100% 1px;
+  }
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(100, 28, 40, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(100, 28, 40, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
